@@ -1,0 +1,33 @@
+<% include ../header %>
+<div class='container text-block text-center'>
+	<% if (data.labels) { %>
+	<img class='beer-photo'src='<%=data.labels.medium%>'>
+	<%} else { %>
+	<img class='beer-photo'src='../pics/brewsr_logo.png' height='260' width='260'>
+	<% } %>
+	<div class='row'>
+		<h2><%= data.name %></h2>
+	</div>
+	<div class='row'>
+		<h4>Description: </h4>
+		<p><%= data.description %></p>
+	</div>
+	<div class='row'>
+		<h4>Beer Info: </h4>
+		<div class='col-xs-6'>
+			<h4>Brewery: <%=data.breweries[0].name%></h4>
+			<h4>Style: <%=data.style.category.name%></h4>
+		</div>
+		<div class='col-xs-6'>
+			<h4>IBU: <%=data.ibu%></h4>
+			<h4>ABV: <%=data.abv%></h4>
+		</div>
+	</div>
+	<div class='row'>
+		<h3>I drank this!</h3>
+		<a href='#' data-id='<%=data.id%>' data-name='<%=data.name%>' class='btn btn-default addBeer'>Add to my list</a>
+	</div>
+</div>	
+
+
+<% include ../footer %>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Brewsr - Where Your Beers Compete!</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/style.css">
+	<link href='http://fonts.googleapis.com/css?family=Gravitas+One' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
+	<script src="/script.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+		<div class="navbar-header">
+		 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      		<a class="navbar-brand" href="/"><img alt="Brand" src="/pics/brewsr_logo.png" height="80" width="80"></a>
+    	</div>
+    	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    	<ul class="nav navbar-nav">
+    		<li><a href="/logout">Log Out</a></li>
+		</ul>
+  		<ul class="nav navbar-nav">
+    		<li><a href="/mybeers">My Beers</a></li>
+		</ul>
+		<ul class="nav navbar-nav">
+    		<li><a href="/list">My Lists</a></li>
+		</ul>
+<!-- 		<ul class="nav navbar-nav">
+    		<li><a href="/recs">My Recommendations</a></li>
+		</ul> -->
+	  	<form action="/beer" method="get" class="navbar-form navbar-right" role="search">
+	  	<div class="form-group">
+	  		<input type="submit" name="Search" class="btn btn-default" id="navsearch">
+			<input type="text" name="beer" placeholder="enter a beer here" class="text-center" id="navfield">
+		</div>
+	  </form>
+	  </div>
+</nav>
+<div class="container text-center">
+<% if(typeof alerts !== 'undefined'){ %>
+    <% for(key in alerts){ %>
+        <% alerts[key].forEach(function(thisMsg){ %>
+            <div class="alert alert-<%= key %>"><%= thisMsg %></div>
+        <% }); %>
+    <% } %>
+<% } %>
+</div>
