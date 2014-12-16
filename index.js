@@ -28,6 +28,7 @@ app.use(flash());
 app.get('*', function(req,res,next) {
   var alerts = req.flash();
   res.locals.alerts = alerts;
+  res.locals.user = req.getUser();
   next();
 })
 
@@ -137,26 +138,92 @@ app.post('/beer', function(req, res) {
 
 app.get('/beer/:id', function(req, res) {
   brewdb.beer.getById(req.params.id, {withBreweries: 'Y'}, function(err, data) {
-    console.log(data);
+    // console.log(data.breweries[0]);
     res.render('beer/beerinfo', {data: data});
   })
 })
 
 app.get('/mybeers', function (req, res) {
   if(req.getUser()){
-    var user = req.getUser();
+    var currentUser = req.getUser();
     db.user.findAll({
-      where: {id: user.id},
+      where: {id: currentUser.id},
       include: [db.beer],
       order: 'elo DESC'
     }).then(function(data) {
-      console.log(data[0].dataValues.beer[0].dataValues);
+      // console.log(data[0].dataValues.beer[0].dataValues);
       res.render('users/mylist', {data:data[0].dataValues})
     })
   } else {
     req.flash('warning', 'Must be logged in to access list!');
     res.redirect('/logon');
   }
+})
+
+app.get('/battle', function(req, res) {
+  if(req.getUser()) {
+    var currentUser = req.getUser();
+    db.user.findAll({
+      where: {id: currentUser.id},
+      include: [db.beer]
+    }).then(function(beerData) {
+      // console.log(beerData[0].dataValues)
+      if (beerData[0].dataValues.beer.length < 10) {
+        req.flash('info', 'You need 10 beers on your list to battle!');
+        res.redirect('/home');
+      } else {
+        res.render('battle/battlehome');
+      }
+    })
+  } else {
+    req.flash('info', 'You need to be logged on to use Battle Mode');
+    res.redirect('/logon');
+  }
+})
+
+app.get('/battle/round', function(req, res) {
+  var currentUser = req.getUser();
+  db.user.find(currentUser.id).then(function(user) {
+    user.getBeer({limit:10,order:'random()'}).then(function(beers) {
+      var battleArray = beers;
+      var beerInfo = beers.map(function(beer) {
+        return beer.dbid;
+      });
+    brewdb.beer.getById(beerInfo, {}, function(err, beerData) {
+      var tempArray = [];
+      for (var i=0; i<battleArray.length; i++) {
+        for (var j=0; j<beerData.length; j++) {
+          if (battleArray[i].dbid === beerData[j].id) {
+            tempArray.push(beerData[j]);
+          }
+        }
+      }
+      res.render('battle/battleround', {roundData: battleArray, beerData: tempArray});
+    })
+  });
+});
+
+
+  // db.usersbeers.findAll({
+  //   where: {userId: currentUser.id},
+  // }).then(function(beerData) {
+  //   var battleArray=[];
+  //   var beerInfo=[];
+  //   for (var i = 0; i<10; i++) {
+  //     var tempRand = Math.floor(Math.random()*beerData.length)
+  //     var beer1 = beerData[tempRand];
+  //     // console.log(beer1.dataValues);
+  //     battleArray.push(beer1);
+  //     db.beer.find({where: {id: beer1.dataValues.beerId}}).then(function(dbInfo) {
+  //       // console.log('DBINFO:', dbInfo.dataValues);
+  //       beerInfo.push(dbInfo.dataValues.dbid);
+  //       // console.log(beerInfo);
+  //     });
+  //     beerData.splice(tempRand, 1);
+  //   }
+  //   console.log(beerInfo);
+  //   res.render('battle/battleround',{battleData: battleArray});
+  // })
 })
 
 app.get('/logout', function(req, res) {

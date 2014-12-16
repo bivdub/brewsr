@@ -25,25 +25,34 @@
       		<a class="navbar-brand" href="/"><img alt="Brand" src="/pics/brewsr_logo.png" height="80" width="80"></a>
     	</div>
     	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    	<ul class="nav navbar-nav">
-    		<li><a href="/logout">Log Out</a></li>
-		</ul>
-  		<ul class="nav navbar-nav">
-    		<li><a href="/mybeers">My Beers</a></li>
-		</ul>
-		<ul class="nav navbar-nav">
-    		<li><a href="/list">My Lists</a></li>
-		</ul>
-<!-- 		<ul class="nav navbar-nav">
-    		<li><a href="/recs">My Recommendations</a></li>
-		</ul> -->
-	  	<form action="/beer" method="get" class="navbar-form navbar-right" role="search">
-	  	<div class="form-group">
-	  		<input type="submit" name="Search" class="btn btn-default" id="navsearch">
-			<input type="text" name="beer" placeholder="enter a beer here" class="text-center" id="navfield">
-		</div>
-	  </form>
-	  </div>
+    	<% if (user) { %>
+	    	<ul class="nav navbar-nav">
+	    		<li><a href="/logout">Log Out</a></li>
+			</ul>
+	  		<ul class="nav navbar-nav">
+	    		<li><a href="/mybeers">My Beers</a></li>
+			</ul>
+			<ul class="nav navbar-nav">
+	    		<li><a href="/list">My Lists</a></li>
+			</ul>
+			<ul class="nav navbar-nav">
+	    		<li><a href="/battle">BATTLE MODE!</a></li>
+			</ul>
+		  	<form action="/beer" method="get" class="navbar-form navbar-right" role="search">
+			  	<div class="form-group">
+			  		<input type="submit" name="Search" class="btn btn-default" id="navsearch">
+					<input type="text" name="beer" placeholder="enter a beer here" class="text-center" id="navfield">
+				</div>
+		  	</form>
+		<% }  else { %>
+			<ul class="nav navbar-nav">
+	    		<li><a href="/logon">Log on</a></li>
+			</ul>
+	  		<ul class="nav navbar-nav">
+	    		<li><a href="/signup">Sign Up!</a></li>
+			</ul>
+		<% } %>
+	  	</div>
 </nav>
 <div class="container text-center">
 <% if(typeof alerts !== 'undefined'){ %>

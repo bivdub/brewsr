@@ -18,7 +18,7 @@
 					<%= i+1 %>
 				</td>
 				<td>
-					<%= data.beer[i].dataValues.name %>
+					<a href='/beer/<%= data.beer[i].dbid %>'><%= data.beer[i].dataValues.name %>
 				</td>
 			</tr>
 		<% } %>
