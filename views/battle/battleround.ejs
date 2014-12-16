@@ -28,33 +28,37 @@
 </nav>
 
 <div class="container text-block text-center">
-	<div class="col-xs-4 col-xs-offset-1 inner-block" id='box0'>
-		<h1>Blok 1</h1>
+	<div class="col-xs-4 col-xs-offset-1 inner-block" id='box0' data-user='<%=roundData[0].userId%>' data-beer='<%=roundData[0].beerId%>'>
+		<br><br>
 		<% if (beerData[0].labels) { %>
 			<img class='beer-photo'src='<%=beerData[0].labels.medium%>'>
 		<%} else { %>
 			<img class='beer-photo'src='../pics/brewsr_logo.png' height='260' width='260'>
 		<% } %>
-		<h3><%=roundData[0].name%></h3>
+		<h3><%=roundData[0].beer.name%></h3>
+		<br><br>
 	</div>
-	<div class="col-xs-4 col-xs-offset-2 inner-block" id='box1'>
-		<h1>Blok 2</h1>
+	<div class="col-xs-4 col-xs-offset-2 inner-block" id='box1' data-user='<%=roundData[1].userId%>' data-beer='<%=roundData[1].beerId%>'>
+		<br><br>
 		<% if (beerData[1].labels) { %>
 			<img class='beer-photo'src='<%=beerData[1].labels.medium%>'>
 		<%} else { %>
 			<img class='beer-photo'src='../pics/brewsr_logo.png' height='260' width='260'>
 		<% } %>
-		<h3><%=roundData[1].name%></h3>	
+		<h3><%=roundData[1].beer.name%></h3>	
+		<br><br>
 	</div>
 	<% for (var i = 2; i<beerData.length; i++) { %>
-		<div class="col-xs-4 col-xs-offset-1 inner-block hide" id='box<%=i%>'>
-			<h1>Blok 1</h1>
+		<div class="col-xs-4 <%= i%2 == 0 ? 'col-xs-offset-1' : 'col-xs-offset-2' %> inner-block" style="display: none" id='box<%=i%>' data-user='<%=roundData[i].userId%>' data-beer='<%=roundData[i].beerId%>'>
+			<br><br>
 			<% if (beerData[i].labels) { %>
-				<img class='beer-photo'src='<%=beerData[0].labels.medium%>'>
+				<img class='beer-photo'src='<%=beerData[i].labels.medium%>'>
 			<%} else { %>
 				<img class='beer-photo'src='../pics/brewsr_logo.png' height='260' width='260'>
 			<% } %>
-			<h3><%=roundData[i].name%></h3>
+			<h3><%=roundData[i].beer.name%></h3>
+			<br><br>
 		</div>
 	<% } %>
+	<a href='/home' class='btn btn-lg btn-default' style="display: none" id="go-home">GO HOME!</a>
 </div>
