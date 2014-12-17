@@ -1,5 +1,31 @@
 <% include header %>
 
 
+<div class='text-block text-center container'>
+	<div class='row'>
+		<h1><%=data.username%>'s Rankings</h1>
+	</div>
+	<table class="table table-bordered text-center">
+		<thead>
+			<tr>
+				<th>ranking</th>
+				<th>Beer Name</th>
+			</tr>
+		</thead>
+		<tbody>
+		<% for(var i=0; i<10; i++) { %>
+			<tr>
+				<td>
+					<%= i+1 %>
+				</td>
+				<td>
+					<a href='/beer/<%= data.beer[i].dbid %>'><%= data.beer[i].dataValues.name %>
+				</td>
+			</tr>
+		<% } %>
+		</tbody>
+	</table>
+</div>
+
 
 <% include footer %>

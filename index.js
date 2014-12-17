@@ -37,7 +37,7 @@ app.get('*', function(req,res,next) {
 //routes
 app.get('/', function (req, res) {
   if (req.getUser()) {
-    res.render('home');
+    res.redirect('/home');
   } else {
     res.render('index');
   }
@@ -100,7 +100,19 @@ app.post('/logon', function(req, res) {
 })
 
 app.get('/home', function(req, res) {
-  res.render('home');
+  if(req.getUser()){
+    var currentUser = req.getUser();
+    db.user.findAll({
+      where: {id: currentUser.id},
+      include: [db.beer],
+      order: 'elo DESC'
+    }).then(function(data) {
+      res.render('home', {data:data[0].dataValues})
+    })
+  } else {
+    req.flash('warning', 'Must be logged in to access list!');
+    res.redirect('/logon');
+  }
 })
 
 app.get('/beer', function(req, res) {
@@ -204,6 +216,31 @@ app.get('/battle', function(req, res) {
 // GET /battle/round/score/:winner/:loser
 // /battle/round/score/4/5
 
+app.get('/battle/round/score/:winner/:loser', function (req, res) {
+  var user = req.getUser();
+  db.usersbeers.findAll({where: {userId: user.id, beerId: req.params.winner}}).then(function(winnerData) {
+    db.usersbeers.findAll({where: {userId: user.id, beerId: req.params.loser}}).then(function(loserData) {
+      var winnerExpected = 1 / (1+Math.pow(10, ((loserData[0].dataValues.elo - winnerData[0].dataValues.elo)/400)));
+      var loserExpected = 1 / (1+Math.pow(10, ((winnerData[0].dataValues.elo - loserData[0].dataValues.elo)/400)));
+      var winnerNewElo = Math.floor(winnerData[0].dataValues.elo + 20*(1-winnerExpected));
+      var loserNewElo = Math.floor(loserData[0].dataValues.elo + 20*(0-loserExpected));
+      db.usersbeers.find({where: {userId: user.id, beerId: req.params.winner}}).then(function(d1) {
+        d1.elo = winnerNewElo;
+        d1.lastrated = Date.now();
+        d1.save().then(function(blank) {
+          db.usersbeers.find({where: {userId: user.id, beerId: req.params.loser}}).then(function(d2) {
+            d2.elo = loserNewElo;
+            d2.lastrated = Date.now();
+            d2.save().then(function(blank2) {
+              res.redirect('/battle/round');
+            })
+          })
+        })
+      })
+    })
+  })
+});
+
 app.get('/battle/round', function(req, res) {
   var currentUser = req.getUser();
     db.usersbeers.findAll({
@@ -218,10 +255,10 @@ app.get('/battle/round', function(req, res) {
       });
       brewdb.beer.getById(beerInfo, {}, function(err, beerData) {
         if (battleArray[0].beer.dbid === beerData[0].id) {
-          res.render('battle/battleroundv2', {roundData: battleArray, beerData: tempArray});
+          res.render('battle/battleroundv2', {roundData: battleArray, beerData: beerData});
         } else {
           beerData.reverse();
-          res.render('battle/battleround', {roundData: battleArray, beerData: tempArray});
+          res.render('battle/battleroundv2', {roundData: battleArray, beerData: beerData});
         }
 
         // for (var i=0; i<battleArray.length; i++) {

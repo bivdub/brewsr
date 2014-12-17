@@ -1,6 +1,9 @@
 <% include ../header %>
 <div class="container text-center text-block">
 	<h2>Search Results</h2>
+	<% if (!data) { %>
+		<h1>No Results Found!</h1>
+	<% } else { %>
 	<table class="table table-bordered text-center">
 		<thead>
 			<tr>
@@ -20,6 +23,7 @@
 			<%}%>
 		</tbody>
 	</table>
+	<% } %>
 </div>	
 
 <% include ../footer %>

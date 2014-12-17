@@ -1,0 +1,27 @@
+<% include ../header %>
+
+<div class="container text-block text-center">
+	<a href="/battle/round/score/<%=roundData[0].beerId%>/<%=roundData[1].beerId%>" class="col-xs-4 col-xs-offset-1 inner-block" data-user='<%=roundData[0].userId%>' data-beer='<%=roundData[0].beerId%>'>
+		<br><br>
+		<% if (beerData[0].labels) { %>
+			<img class='beer-photo'src='<%=beerData[0].labels.medium%>'>
+		<%} else { %>
+			<img class='beer-photo'src='../pics/brewsr_logo.png' height='260' width='260'>
+		<% } %>
+		<h3><%=roundData[0].beer.name%></h3>
+		<br><br>
+	</a>
+
+	<a href="/battle/round/score/<%=roundData[1].beerId%>/<%=roundData[0].beerId%>" class="col-xs-4 col-xs-offset-2 inner-block">
+		<br><br>
+		<% if (beerData[1].labels) { %>
+			<img class='beer-photo'src='<%=beerData[1].labels.medium%>'>
+		<%} else { %>
+			<img class='beer-photo'src='../pics/brewsr_logo.png' height='260' width='260'>
+		<% } %>
+		<h3><%=roundData[1].beer.name%></h3>	
+		<br><br>
+	</a>
+</div>
+
+<% include ../footer %>
