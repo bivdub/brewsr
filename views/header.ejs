@@ -10,6 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="/style.css">
 	<link href='http://fonts.googleapis.com/css?family=Gravitas+One' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/animate.css">
 	<script src="/script.js"></script>
 </head>
 <body>
@@ -38,6 +39,7 @@
 			<ul class="nav navbar-nav">
 	    		<li><a href="/battle">BATTLE MODE!</a></li>
 			</ul>
+			<a href='http://www.brewerydb.com'><img src='/pics/BreweryDB.png' class='header-banner'></a>
 		  	<form action="/beer" method="get" class="navbar-form navbar-right" role="search">
 			  	<div class="form-group">
 			  		<input type="submit" name="Search" class="btn btn-default" id="navsearch">
@@ -45,6 +47,7 @@
 				</div>
 		  	</form>
 		<% }  else { %>
+			<a href='http://www.brewerydb.com'><img src='../pics/BreweryDB.png' class='header-banner'></a>
 			<ul class="nav navbar-nav">
 	    		<li><a href="/logon">Log on</a></li>
 			</ul>

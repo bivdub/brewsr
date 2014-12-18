@@ -7,18 +7,13 @@
 	<table class="table table-bordered text-center">
 		<thead>
 			<tr>
-				<th>Add</th>
-				<th>Beer Info</th>
+				<th class='text-center'>Beer Info</th>
 			</tr>
 		</thead>
 		<tbody>
 			<% for(var i=0; i<data.length; i++) { %>
 				<tr>
-					<td>
-						<!-- <a href='#' data-id="" -->
-					</td>
-					<td><a href='/beer/<%=data[i].id%>'><%=data[i].name%></a>
-					</td>
+					<td><a href='/beer/<%=data[i].id%>'><%=data[i].name%></a></td>
 				</tr>
 			<%}%>
 		</tbody>

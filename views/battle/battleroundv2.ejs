@@ -1,7 +1,7 @@
 <% include ../header %>
 
 <div class="container text-block text-center">
-	<a href="/battle/round/score/<%=roundData[0].beerId%>/<%=roundData[1].beerId%>" class="col-xs-4 col-xs-offset-1 inner-block" data-user='<%=roundData[0].userId%>' data-beer='<%=roundData[0].beerId%>'>
+	<a href="/battle/round/score/<%=roundData[0].beerId%>/<%=roundData[1].beerId%>" class="col-xs-4 col-xs-offset-1 inner-block animated bounceInLeft" data-user='<%=roundData[0].userId%>' data-beer='<%=roundData[0].beerId%>'>
 		<br><br>
 		<% if (beerData[0].labels) { %>
 			<img class='beer-photo'src='<%=beerData[0].labels.medium%>'>
@@ -12,7 +12,7 @@
 		<br><br>
 	</a>
 	<h1 class='col-xs-2'><br><br><br><br>VS.</h1>
-	<a href="/battle/round/score/<%=roundData[1].beerId%>/<%=roundData[0].beerId%>" class="col-xs-4 inner-block">
+	<a href="/battle/round/score/<%=roundData[1].beerId%>/<%=roundData[0].beerId%>" class="col-xs-4 inner-block animated bounceInRight">
 		<br><br>
 		<% if (beerData[1].labels) { %>
 			<img class='beer-photo'src='<%=beerData[1].labels.medium%>'>

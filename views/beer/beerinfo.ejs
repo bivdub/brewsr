@@ -1,4 +1,5 @@
 <% include ../header %>
+
 <div class='container text-block text-center'>
 	<% if (data.labels) { %>
 	<img class='beer-photo'src='<%=data.labels.medium%>'>
@@ -26,7 +27,7 @@
 		</div>
 	</div>
 	<div class='row'>
-		<%if (alreadyOnList) { %>
+		<%if (alreadyOnList != null) { %>
 		<h2>On your list!</h2>
 		<a href='/battle/battlehome/<%=data.id%>' data-id='<%=data.id%>' data-name='<%=data.name%>' class='btn btn-default'>I wanna battle THIS beer!</a>
 		<% } else { %>

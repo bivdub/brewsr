@@ -4,12 +4,14 @@
 	<% if (data[0].beer.length < 10) { %> 
 	<h1> Drink Some Beers! </h1>
 	<h4> Top Ten will appear here after ten beers are on list! </h4>
+	<h4> Search for beers to add to you list on the search above and to the right</h4>
+	<h4> Go to Battle Mode once you have 5 beers on your list to start ranking them!</h4>
 	<% } else { %>	
 	<div class='row'>
 		<h1><%=data[0].username%>'s Top Ten</h1>
 	</div>
 	<div class='text-left'>
-	<div class='col-xs-5 col-xs-offset-1'>
+		<div class='col-xs-5 col-xs-offset-1'>
 			<% for (var i=0; i <5; i++) { %>
 			<div class='inner-block banner-block'>
 				<img src='../pics/medal_<%=(i+1)%>.png' class='banner-photo'>
@@ -21,12 +23,13 @@
 			<% for (var i=5; i <10; i++) { %>
 			<div class='inner-block banner-block'>
 				<img src='../pics/medal_<%=(i+1)%>.png' class='banner-photo'>
-				<h4 class='banner-text'><a href='/beer/<%=data[0].beer[i].dbid%>'><%=data[0].beer[i].name%></h4>
+				<h4 class='banner-text'><a href='/beer/<%=data[0].beer[i].dbid%>'><%=data[0].beer[i].name%></a></h4>
 			</div>
 			<% } %>
 		</div>
 	</div>
-</div>
 <% } %>
+</div>
+
 
 <% include footer %>

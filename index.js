@@ -185,7 +185,7 @@ app.get('/beer/:id', function(req, res) {
       })
     } else {
       brewdb.beer.getById(req.params.id, {withBreweries: 'Y'}, function(err, data) {
-        res.render('beer/beerinfo', {data: data, alreadyOnList: Date.now()});
+        res.render('beer/beerinfo', {data: data, alreadyOnList: null});
       })
     }
   })
@@ -371,6 +371,10 @@ app.get('/list', function(req, res) {
   res.render('users/infolists');
 })
 
+app.get('/about', function(req, res) {
+  res.render('about');
+})
+
 app.get('/logout', function(req, res) {
   if(req.getUser()) {
     delete req.session.user;
@@ -381,4 +385,4 @@ app.get('/logout', function(req, res) {
     res.redirect('/');
   }
 })
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
