@@ -11,8 +11,8 @@
 		<h3><%=roundData[0].beer.name%></h3>
 		<br><br>
 	</a>
-
-	<a href="/battle/round/score/<%=roundData[1].beerId%>/<%=roundData[0].beerId%>" class="col-xs-4 col-xs-offset-2 inner-block">
+	<h1 class='col-xs-2'><br><br><br><br>VS.</h1>
+	<a href="/battle/round/score/<%=roundData[1].beerId%>/<%=roundData[0].beerId%>" class="col-xs-4 inner-block">
 		<br><br>
 		<% if (beerData[1].labels) { %>
 			<img class='beer-photo'src='<%=beerData[1].labels.medium%>'>

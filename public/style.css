@@ -5,7 +5,13 @@ body {
 h1 {
 	font-family: 'Gravitas One', serif;
 }
-
+a {
+	color: #FFB8A2;
+}
+a:hover {
+	color: #FFB8A2;
+	text-decoration: underline;
+}
 input:focus {
 	outline-color: #CC2D00;
 	outline-radius: 10px;
@@ -81,6 +87,26 @@ input:focus {
 .beer-photo {
 	border-radius: 100%;
 	border: 2px solid #7F1C00;
+}
+.banner-text {
+	display: inline-block;
+}
+.banner-block {
+	padding: 1em 1em 1em 1em;
+	border-radius: 75px;
+	width: 100%;
+	margin-bottom: 1em;
+
+}
+.banner-photo {
+	height: 60px;
+	width: 60px;
+	border-radius: 100%;
+	border: 2px solid #7F1C00;
+	
+}
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #7F1C00;
 }
 #navfield {
 	margin-top: 2em;

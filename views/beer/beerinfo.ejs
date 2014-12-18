@@ -16,7 +16,9 @@
 		<h4>Beer Info: </h4>
 		<div class='col-xs-6'>
 			<h4>Brewery: <%=data.breweries[0].name%></h4>
+			<% if (data.style) { %>
 			<h4>Style: <%=data.style.category.name%></h4>
+			<% } %>
 		</div>
 		<div class='col-xs-6'>
 			<h4>IBU: <%=data.ibu%></h4>
@@ -24,8 +26,13 @@
 		</div>
 	</div>
 	<div class='row'>
+		<%if (alreadyOnList) { %>
+		<h2>On your list!</h2>
+		<a href='/battle/battlehome/<%=data.id%>' data-id='<%=data.id%>' data-name='<%=data.name%>' class='btn btn-default'>I wanna battle THIS beer!</a>
+		<% } else { %>
 		<h3>I drank this!</h3>
-		<a href='#' data-id='<%=data.id%>' data-name='<%=data.name%>' class='btn btn-default addBeer'>Add to my list</a>
+		<a href='/beer/<%=data.id%>' data-id='<%=data.id%>' data-name='<%=data.name%>' class='btn btn-default addBeer'>Add to my list</a>
+		<% } %>
 	</div>
 </div>	
 

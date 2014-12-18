@@ -4,11 +4,14 @@
 	<div class='row'>
 		<h1><%=data.username%>'s Rankings</h1>
 	</div>
-	<table class="table table-bordered text-center">
+	<% if (data.beer.length === 0) {%>
+		<h1> Drink Some Beers </h1>
+	<% } else { %>	
+	<table class="table table-bordered text-center table-striped">
 		<thead>
 			<tr>
-				<th>ranking</th>
-				<th>Beer Name</th>
+				<th class='text-center'>ranking</th>
+				<th class='text-center'>Beer Name</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -18,11 +21,12 @@
 					<%= i+1 %>
 				</td>
 				<td>
-					<a href='/beer/<%= data.beer[i].dbid %>'><%= data.beer[i].dataValues.name %>
+					<a href='/beer/<%= data.beer[i].dbid %>'><%= data.beer[i].dataValues.name %></a>
 				</td>
 			</tr>
 		<% } %>
 		</tbody>
 	</table>
+	<% } %>
 </div>
 <% include ../footer %>

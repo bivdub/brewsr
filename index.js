@@ -7,7 +7,7 @@ var session = require('express-session');
 var db = require('./models/index.js');
 var flash = require('connect-flash');
 var BreweryDb = require('brewerydb-node');
-var brewdb = new BreweryDb('35658c8d52dbd0a8af07c8dbd4b3889d');
+var brewdb = new BreweryDb(''+process.env.beer);
 
 //app setup / middleware
 app.set('view engine', 'ejs');
@@ -86,15 +86,15 @@ app.post('/logon', function(req, res) {
             username: foundUser.username
           }
           req.flash('info', 'Welcome, '+foundUser.username+'!');
-          res.redirect('home');
+          res.redirect('/home');
         } else {
           req.flash('warning', 'Incorrect Password');
-          res.redirect('logon');
+          res.redirect('/logon');
         }
       })
     } else {
       req.flash('warning', 'user not found');
-      res.redirect('logon');
+      res.redirect('/logon');
     }
   })
 })
@@ -107,10 +107,11 @@ app.get('/home', function(req, res) {
       include: [db.beer],
       order: 'elo DESC'
     }).then(function(data) {
-      res.render('home', {data:data[0].dataValues})
+      // res.send(data)
+      res.render('home', {data:data});
     })
   } else {
-    req.flash('warning', 'Must be logged in to access list!');
+    req.flash('warning', 'Must be logged in to access home!');
     res.redirect('/logon');
   }
 })
@@ -155,7 +156,7 @@ app.post('/beer', function(req, res) {
     }).spread(function(beerData, created) {
       db.usersbeers.findOrCreate({
         where: {beerId: beerData.id, userId: user.id},
-        defaults: {beerId: beerData.id, userId: user.id, elo: 1000, lastrated: null}
+        defaults: {beerId: beerData.id, userId: user.id, elo: 1000, lastrated: Date.now()}
       }).spread(function(combinedData, created) {
         if(created) {
           req.flash('info', 'Beer added to list!');
@@ -173,8 +174,20 @@ app.post('/beer', function(req, res) {
 })
 
 app.get('/beer/:id', function(req, res) {
-  brewdb.beer.getById(req.params.id, {withBreweries: 'Y'}, function(err, data) {
-    res.render('beer/beerinfo', {data: data});
+  var currentUser = req.getUser();
+  db.beer.find({where: {dbid: req.params.id}}).then(function(beerData) {
+    if(beerData) {
+      db.usersbeers.find({where: {beerId: beerData.id, userId: currentUser.id}}).then(function(onList) {
+        // console.log('ONLIST',onList);
+        brewdb.beer.getById(req.params.id, {withBreweries: 'Y'}, function(err, data) {
+        res.render('beer/beerinfo', {data: data, alreadyOnList: onList});
+        })
+      })
+    } else {
+      brewdb.beer.getById(req.params.id, {withBreweries: 'Y'}, function(err, data) {
+        res.render('beer/beerinfo', {data: data, alreadyOnList: Date.now()});
+      })
+    }
   })
 })
 
@@ -201,8 +214,8 @@ app.get('/battle', function(req, res) {
       where: {id: currentUser.id},
       include: [db.beer]
     }).then(function(beerData) {
-      if (beerData[0].dataValues.beer.length < 10) {
-        req.flash('info', 'You need 10 beers on your list to battle!');
+      if (beerData[0].dataValues.beer.length < 5) {
+        req.flash('info', 'You need 5 beers on your list to battle!');
         res.redirect('/home');
       } else {
         res.render('battle/battlehome');
@@ -213,8 +226,98 @@ app.get('/battle', function(req, res) {
     res.redirect('/logon');
   }
 })
-// GET /battle/round/score/:winner/:loser
-// /battle/round/score/4/5
+
+app.get('/battle/battlehome/:id', function(req, res) {
+  if(req.getUser()) {
+    var currentUser = req.getUser();
+    db.user.findAll({
+      where: {id: currentUser.id},
+      include: [db.beer]
+    }).then(function(beerData) {
+      if (beerData[0].dataValues.beer.length < 5) {
+        req.flash('info', 'You need 5 beers on your list to battle!');
+        res.redirect('/home');
+      } else {
+        db.beer.find({where: {dbid: req.params.id}}).then(function(featuredBeer) {
+          // console.log('BEERDATA', featuredBeer);
+          res.redirect('/battle/round/'+featuredBeer.dataValues.id);
+        })
+      }
+    })
+  } else {
+    req.flash('info', 'You need to be logged on to use Battle Mode');
+    res.redirect('/logon');
+  }
+})
+
+app.get('/battle/round/:id', function(req, res) {
+  var currentUser = req.getUser();
+  db.usersbeers.findAll({
+    where: {userId: currentUser.id, beerId: {not: req.params.id}}, 
+    order:'lastrated ASC', 
+    limit: 1,
+    include: [{model:db.beer}]
+  }).then(function(firstBeer) {
+    // console.log('FIRSTBEER', firstBeer);
+    db.usersbeers.findAll({
+      where: {userId: currentUser.id, beerId: req.params.id},
+      include: [{model: db.beer}]
+    }).then(function(featuredBeer) {
+      // console.log('FEATUREDBEER', featuredBeer);
+      var battleArray = [featuredBeer, firstBeer];
+      // console.log('BATTLEARRAY', battleArray);
+      var beerInfo = battleArray.map(function(beer) {
+        // console.log(beer);
+        return beer[0].beer.dbid;
+      });
+      // console.log('BEERINFO:', beerInfo);
+      brewdb.beer.getById(beerInfo, {}, function(err, beerData) {
+        if (battleArray[0][0].beer.dbid === beerData[0].id) {
+          if(!beerData[1]) {
+            console.log(battleArray, beerData, beerInfo)
+            res.send(beerData);
+          } else {
+          res.render('battle/battleroundv2solo', {roundData: battleArray, beerData: beerData});
+          }
+        
+        } else {
+          beerData.reverse();
+          if(!beerData[1]) {
+            console.log(battleArray, beerData, beerInfo);
+            res.send(beerData);
+          } else {
+            res.render('battle/battleroundv2solo', {roundData: battleArray, beerData: beerData});
+          }   
+        }
+      })
+    });
+  });
+});
+
+app.get('/battle/round/solo/score/:winner/:loser/:solo', function (req, res) {
+  var user = req.getUser();
+  db.usersbeers.findAll({where: {userId: user.id, beerId: req.params.winner}}).then(function(winnerData) {
+    db.usersbeers.findAll({where: {userId: user.id, beerId: req.params.loser}}).then(function(loserData) {
+      var winnerExpected = 1 / (1+Math.pow(10, ((loserData[0].dataValues.elo - winnerData[0].dataValues.elo)/400)));
+      var loserExpected = 1 / (1+Math.pow(10, ((winnerData[0].dataValues.elo - loserData[0].dataValues.elo)/400)));
+      var winnerNewElo = Math.floor(winnerData[0].dataValues.elo + 20*(1-winnerExpected));
+      var loserNewElo = Math.floor(loserData[0].dataValues.elo + 20*(0-loserExpected));
+      db.usersbeers.find({where: {userId: user.id, beerId: req.params.winner}}).then(function(d1) {
+        d1.elo = winnerNewElo;
+        d1.lastrated = Date.now();
+        d1.save().then(function(blank) {
+          db.usersbeers.find({where: {userId: user.id, beerId: req.params.loser}}).then(function(d2) {
+            d2.elo = loserNewElo;
+            d2.lastrated = Date.now();
+            d2.save().then(function(blank2) {
+              res.redirect('/battle/round/'+req.params.solo);
+            })
+          })
+        })
+      })
+    })
+  })
+});
 
 app.get('/battle/round/score/:winner/:loser', function (req, res) {
   var user = req.getUser();
@@ -243,35 +346,30 @@ app.get('/battle/round/score/:winner/:loser', function (req, res) {
 
 app.get('/battle/round', function(req, res) {
   var currentUser = req.getUser();
-    db.usersbeers.findAll({
-      where: {userId: currentUser.id}, 
-      order:'random()', 
-      limit: 2,
-      include: [{model:db.beer}]
-    }).then(function(usersbeers) {
-      var battleArray = usersbeers;
-      var beerInfo = usersbeers.map(function(beer) {
-        return beer.beer.dbid;
-      });
-      brewdb.beer.getById(beerInfo, {}, function(err, beerData) {
-        if (battleArray[0].beer.dbid === beerData[0].id) {
-          res.render('battle/battleroundv2', {roundData: battleArray, beerData: beerData});
-        } else {
-          beerData.reverse();
-          res.render('battle/battleroundv2', {roundData: battleArray, beerData: beerData});
-        }
-
-        // for (var i=0; i<battleArray.length; i++) {
-        //   for (var j=0; j<beerData.length; j++) {
-        //     if (battleArray[i].beer.dbid === beerData[j].id) {
-        //       tempArray.push(beerData[j]);
-        //     }
-        //   }
-        // }
-      })
+  db.usersbeers.findAll({
+    where: {userId: currentUser.id}, 
+    order:'random()', 
+    limit: 2,
+    include: [{model:db.beer}]
+  }).then(function(usersbeers) {
+    var battleArray = usersbeers;
+    var beerInfo = usersbeers.map(function(beer) {
+      return beer.beer.dbid;
     });
-  // });
+    brewdb.beer.getById(beerInfo, {}, function(err, beerData) {
+      if (battleArray[0].beer.dbid === beerData[0].id) {
+        res.render('battle/battleroundv2', {roundData: battleArray, beerData: beerData});
+      } else {
+        beerData.reverse();
+        res.render('battle/battleroundv2', {roundData: battleArray, beerData: beerData});
+      }
+    })
+  });
 });
+
+app.get('/list', function(req, res) {
+  res.render('users/infolists');
+})
 
 app.get('/logout', function(req, res) {
   if(req.getUser()) {

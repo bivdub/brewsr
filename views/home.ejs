@@ -1,31 +1,32 @@
 <% include header %>
 
-
 <div class='text-block text-center container'>
+	<% if (data[0].beer.length < 10) { %> 
+	<h1> Drink Some Beers! </h1>
+	<h4> Top Ten will appear here after ten beers are on list! </h4>
+	<% } else { %>	
 	<div class='row'>
-		<h1><%=data.username%>'s Rankings</h1>
+		<h1><%=data[0].username%>'s Top Ten</h1>
 	</div>
-	<table class="table table-bordered text-center">
-		<thead>
-			<tr>
-				<th>ranking</th>
-				<th>Beer Name</th>
-			</tr>
-		</thead>
-		<tbody>
-		<% for(var i=0; i<10; i++) { %>
-			<tr>
-				<td>
-					<%= i+1 %>
-				</td>
-				<td>
-					<a href='/beer/<%= data.beer[i].dbid %>'><%= data.beer[i].dataValues.name %>
-				</td>
-			</tr>
-		<% } %>
-		</tbody>
-	</table>
+	<div class='text-left'>
+	<div class='col-xs-5 col-xs-offset-1'>
+			<% for (var i=0; i <5; i++) { %>
+			<div class='inner-block banner-block'>
+				<img src='../pics/medal_<%=(i+1)%>.png' class='banner-photo'>
+				<h4 class='banner-text'><a href='/beer/<%=data[0].beer[i].dbid%>'><%=data[0].beer[i].name%></h4>
+			</div>
+			<% } %>
+		</div>
+		<div class='col-xs-5'>
+			<% for (var i=5; i <10; i++) { %>
+			<div class='inner-block banner-block'>
+				<img src='../pics/medal_<%=(i+1)%>.png' class='banner-photo'>
+				<h4 class='banner-text'><a href='/beer/<%=data[0].beer[i].dbid%>'><%=data[0].beer[i].name%></h4>
+			</div>
+			<% } %>
+		</div>
+	</div>
 </div>
-
+<% } %>
 
 <% include footer %>
