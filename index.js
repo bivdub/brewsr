@@ -60,15 +60,15 @@ app.post('/signup', function(req, res) {
       res.redirect('/signup');
     }
   }).catch(function(error) {
-        if (error && Array.isArray(error.errors)) {
-          error.errors.forEach(function(errorItem) {
-            req.flash('danger', errorItem.message);
-          })
-        }else{
-          req.flash('danger', 'unkown error');
-        }
-        res.redirect('/signup');
-    })
+    if (error && Array.isArray(error.errors)) {
+      error.errors.forEach(function(errorItem) {
+        req.flash('danger', errorItem.message);
+      })
+    }else{
+      req.flash('danger', 'unkown error');
+    }
+    res.redirect('/signup');
+  })
 })
 
 app.get('/logon', function(req, res) {
@@ -180,7 +180,7 @@ app.get('/beer/:id', function(req, res) {
       db.usersbeers.find({where: {beerId: beerData.id, userId: currentUser.id}}).then(function(onList) {
         // console.log('ONLIST',onList);
         brewdb.beer.getById(req.params.id, {withBreweries: 'Y'}, function(err, data) {
-        res.render('beer/beerinfo', {data: data, alreadyOnList: onList});
+          res.render('beer/beerinfo', {data: data, alreadyOnList: onList});
         })
       })
     } else {
@@ -277,9 +277,9 @@ app.get('/battle/round/:id', function(req, res) {
             console.log(battleArray, beerData, beerInfo)
             res.send(beerData);
           } else {
-          res.render('battle/battleroundv2solo', {roundData: battleArray, beerData: beerData});
+            res.render('battle/battleroundv2solo', {roundData: battleArray, beerData: beerData});
           }
-        
+          
         } else {
           beerData.reverse();
           if(!beerData[1]) {
@@ -291,7 +291,7 @@ app.get('/battle/round/:id', function(req, res) {
         }
       })
     });
-  });
+});
 });
 
 app.get('/battle/round/solo/score/:winner/:loser/:solo', function (req, res) {
