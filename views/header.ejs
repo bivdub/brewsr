@@ -23,23 +23,18 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/"><img alt="Brand" src="/pics/brewsr_logo.png" height="80" width="80"></a>
+			<a class="navbar-brand" href="/"><img class='header-logo' alt="Brand" src="/pics/brewsr_logo.png"></a>
+			<a href='http://www.brewerydb.com' class='navbar-brand' ><img class="header-banner" alt="Brand" src='../pics/BreweryDB.png'></a>
+
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<% if (user) { %>
 			<ul class="nav navbar-nav">
 				<li><a href="/home">Home</a></li>
-			</ul>
-			<ul class="nav navbar-nav">
 				<li><a href="/logout">Log Out</a></li>
-			</ul>
-			<ul class="nav navbar-nav">
 				<li><a href="/mybeers">My Beers</a></li>
-			</ul>
-			<ul class="nav navbar-nav">
 				<li><a href="/battle">BATTLE MODE!</a></li>
 			</ul>
-			<a href='http://www.brewerydb.com'><img src='/pics/BreweryDB.png' class='header-banner'></a>
 			<form action="/beer" method="get" class="navbar-form navbar-right" role="search">
 				<div class="form-group">
 					<input type="submit" name="Search" class="btn btn-default" id="navsearch">
@@ -47,11 +42,8 @@
 				</div>
 			</form>
 			<% }  else { %>
-			<a href='http://www.brewerydb.com'><img src='../pics/BreweryDB.png' class='header-banner'></a>
 			<ul class="nav navbar-nav">
 				<li><a href="/logon">Log on</a></li>
-			</ul>
-			<ul class="nav navbar-nav">
 				<li><a href="/signup">Sign Up!</a></li>
 			</ul>
 			<% } %>
